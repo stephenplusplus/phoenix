@@ -38,6 +38,13 @@
       });
     }
 
+    function exists($ref) {
+      return $ref.$loaded().then(function(data) {
+        // http://stackoverflow.com/questions/25778059/how-to-check-if-the-object-exists-in-firebase-using-angularfire-asobject
+        return $q.resolve(data.$value !== null);
+      });
+    }
+
     function object(path) {
       var ref = rootRef.child(path.join('/'));
       return $firebaseObject(ref);
@@ -87,6 +94,8 @@
     return {
       isAuthenticated: isAuthenticated,
       auth: auth,
+
+      exists: exists,
 
       getMyDashboards: getMyDashboards,
       getMyDashboard: getMyDashboard,

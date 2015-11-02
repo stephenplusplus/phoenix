@@ -1,5 +1,40 @@
 <section layout="column" flex>
-  <navbar projects="$projects.projects" user="gapi.user"></navbar>
+  <navbar projects="projects.map" user="gapi.user"></navbar>
+
+  <div layout-margin layout-padding ng-if="ACTIVE_STATE.name === 'projects'">
+    <h1 class="md-display-1">Custom Dashboards</h1>
+
+    <p>
+      Your projects are listed below. Each one may have one or more dashboards. Click <md-icon>add</md-icon> to create a customized dashboard.
+    </p>
+
+    <md-content layout-padding layout-margin ng-repeat="(projectId, projectData) in projects.map">
+      <div layout="row" layout-align="start start">
+        <div layout-margin class="md-headline">{{projectData.name}}</div>
+      </div>
+
+      <div layout="row">
+        <md-card
+          class="dashboard-card dashboard-card--create"
+          layout-padding>
+          <md-card-content ng-click="projects.createDashboard(projectId)">
+            <md-icon class="md-18">add</md-icon>
+          </md-card-content>
+        </md-card>
+
+        <md-card
+          class="dashboard-card"
+          layout-padding
+          ng-repeat="(dashboardId, dashboardData) in projectData.dashboards"
+          ui-sref="dashboard({ projectId: projectId, dashboardId: dashboardId })">
+          <md-card-content>
+            <h2 class="md-title">{{dashboardData.name || 'Default'}}</h2>
+          </md-card-content>
+        </md-card>
+      </div>
+    </md-content>
+  </div>
+
   <div ui-view layout="column" flex></div>
 </section>
 

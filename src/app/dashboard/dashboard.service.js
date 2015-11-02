@@ -27,13 +27,16 @@
     };
 
     $Dashboard.prototype.save = function(data) {
-      return this.$dataRef.then(function($ref) {
-        return $ref.$save(data);
-      });
+      angular.extend(this.$dataRef, data);
+      return this.$dataRef.$save(data);
     };
 
     $Dashboard.prototype.getPlugin = function(id) {
       return new $Plugin(this.projectId, this.id, id);
+    };
+
+    $Dashboard.prototype.exists = function() {
+      return firebaseDriver.exists(this.$dataRef);
     };
 
     return $Dashboard;

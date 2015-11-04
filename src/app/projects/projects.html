@@ -1,40 +1,45 @@
 <section layout="column" flex>
   <navbar projects="projects.map" user="gapi.user"></navbar>
-
-  <div layout-margin layout-padding ng-if="ACTIVE_STATE.name === 'projects'">
-    <h1 class="md-display-1">Custom Dashboards</h1>
-
-    <p>
-      Your projects are listed below. Each one may have one or more dashboards. Click <md-icon>add</md-icon> to create a customized dashboard.
-    </p>
-
-    <md-content layout-padding layout-margin ng-repeat="(projectId, projectData) in projects.map">
-      <div layout="row" layout-align="start start">
-        <div layout-margin class="md-headline">{{projectData.name}}</div>
-      </div>
-
-      <div layout="row">
-        <md-card
-          class="dashboard-card dashboard-card--create"
-          layout-padding>
-          <md-card-content ng-click="projects.createDashboard(projectId)">
-            <md-icon class="md-18">add</md-icon>
-          </md-card-content>
-        </md-card>
-
-        <md-card
-          class="dashboard-card"
-          layout-padding
-          ng-repeat="(dashboardId, dashboardData) in projectData.dashboards"
-          ui-sref="dashboard({ projectId: projectId, dashboardId: dashboardId })">
-          <md-card-content>
-            <h2 class="md-title">{{dashboardData.name || 'Default'}}</h2>
-          </md-card-content>
-        </md-card>
-      </div>
-    </md-content>
+  <div ng-if="ACTIVE_STATE.name === 'projects'">
+    <md-tabs class="dashboard-tabs">
+      <md-tab
+        ng-repeat="(projectId, projectData) in projects.map"
+        label="{{projectData.name}}"
+        md-on-deselect="projects.dashboardListId = null"
+        md-on-select="projects.dashboardListId = projectId">
+        <div layout="row" layout-sm="column">
+          <md-card
+            class="dashboard-card"
+            ng-repeat="(dashboardId, dashboardData) in projectData.dashboards">
+            <md-card-content ui-sref="dashboard({ projectId: projectId, dashboardId: dashboardId })">
+              <h3 class="md-title">{{dashboardData.name || 'Default Dashboard'}}</h3>
+            </md-card-content>
+            <md-divider></md-divider>
+            <div class="md-actions" layout="row" layout-align="end center">
+              <md-button class="md-icon-button">
+                <md-tooltip>Edit Dashboard</md-tooltip>
+                <md-icon>edit</md-icon>
+              </md-button>
+              <md-button class="md-icon-button">
+                <md-tooltip>Share Dashboard</md-tooltip>
+                <md-icon>share</md-icon>
+              </md-button>
+              <md-button class="md-icon-button">
+                <md-tooltip>Delete Dashboard</md-tooltip>
+                <md-icon>delete</md-icon>
+              </md-button>
+            </div>
+          </md-card>
+        </div>
+      </md-tab>
+    </md-tabs>
+    <md-button
+      class="md-fab dashboard-add"
+      ng-if="projects.dashboardListId"
+      ng-click="projects.createDashboard(projects.dashboardListId)">
+      <md-tooltip>Create a new Dashboard</md-tooltip>
+      <md-icon>add</md-icon>
+    </md-button>
   </div>
-
   <div ui-view layout="column" flex></div>
 </section>
-
